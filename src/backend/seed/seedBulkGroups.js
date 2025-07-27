@@ -35,7 +35,7 @@ const BulkGroup = require("../models/BulkGroup");
         participants: 12,
         deadline: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5),
         unit: "bag",
-        imageUrl: "https://images.unsplash.com/photo-1604908554049-1d9311c7f2b2?w=400&q=80",
+        imageUrl: "https://3.imimg.com/data3/RY/MO/MY-8684380/basmati-rice-sona-sikka-1000x1000.jpg",
         desc: "Premium basmati rice, 25kg pack.",
       },
       {

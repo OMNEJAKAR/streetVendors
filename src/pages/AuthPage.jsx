@@ -41,9 +41,7 @@ export default function AuthPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
-      // Show a success message and redirect
-      alert("Registration successful! Please login.");
-      setMode("login");
+      // ✅ after successful registration – go to login
       navigate("/vendor/login");
     } catch (err) {
       setError(err.message || "Something went wrong");
@@ -57,7 +55,7 @@ export default function AuthPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/vendor/login", {
+      const res = await fetch("/api/vendor/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
@@ -66,7 +64,8 @@ export default function AuthPage() {
       if (!res.ok) throw new Error(data.message || "Invalid credentials");
 
       localStorage.setItem("token", data.token);
-      navigate("/vendor/dashboard"); // Go to dashboard
+      // navigate to your dashboard
+      navigate("/vendor/dashboard");
     } catch (err) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -78,7 +77,10 @@ export default function AuthPage() {
     <div className="auth-wrapper">
       <div className="card">
         <h1 className="brand">
-          <span role="img" aria-label="store">🏬</span> VendorMart
+          <span role="img" aria-label="store">
+            🏬
+          </span>{" "}
+          VendorMart
         </h1>
         <h2 className="title">
           {mode === "login" ? "Vendor Login" : "Vendor Registration"}
@@ -88,7 +90,7 @@ export default function AuthPage() {
 
         {mode === "login" ? (
           <form onSubmit={handleLogin}>
-            <div className="field">
+          <div className="field">
               <label>Username</label>
               <input
                 name="username"
@@ -127,6 +129,8 @@ export default function AuthPage() {
                 Register
               </button>
             </p>
+
+            <p className="link-small">Seller Login</p>
           </form>
         ) : (
           <form onSubmit={handleRegister}>
@@ -215,6 +219,7 @@ export default function AuthPage() {
         )}
       </div>
 
+      {/* quick styles to get you going; replace with Tailwind/CSS-in-JS/etc. */}
       <style jsx>{`
         .auth-wrapper {
           min-height: 100vh;
@@ -280,13 +285,19 @@ export default function AuthPage() {
           color: #666;
           font-size: 0.9rem;
         }
-        .link {
+        .link,
+        .link-small {
           background: none;
           border: none;
           padding: 0;
           color: #1a73e8;
           cursor: pointer;
           font-size: 0.9rem;
+        }
+        .link-small {
+          margin-top: 0.75rem;
+          text-align: center;
+          display: block;
         }
         .error {
           background: #ffe8e6;

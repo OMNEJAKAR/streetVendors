@@ -1,21 +1,24 @@
 // src/pages/VendorDashboard.jsx
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState} from "react";
+import { Link } from "react-router-dom";
 import "./VendorDashboard.css";
+import StatusCard from "./statusCard";
+import { useNavigate } from "react-router-dom";
+import VoiceSearchModal from "../backend/models/VoiceSearchModal";
+
 
 const VendorDashboard = () => {
     const navigate = useNavigate();
+    const VENDOR_ID = "6884e1c1c6bb5e111aedc8bf";
     const [surplusDeals, setSurplusDeals] = useState([]);
-    const [activeDeals, setActiveDeals] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState(null);
     const [err, setErr] = useState("");
+  const [recording, setRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [voiceResults, setVoiceResults] = useState({ transcript: "", matches: [] });
+const [isModalOpen, setIsModalOpen] = useState(false);
 
-      const handleLogout = () => {
-      localStorage.removeItem("token");
-      // if you store user anywhere else, clear it here too
-      // e.g. reduxStore.dispatch(logout())
-      navigate("/vendor/login", { replace: true });
-    };
 
     useEffect(() => {
   (async () => {
@@ -40,45 +43,98 @@ const VendorDashboard = () => {
   })();
 }, []);
 
+const startVoiceOrder = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    let chunks = [];
+
+    recorder.ondataavailable = (e) => chunks.push(e.data);
+    recorder.onstop = async () => {
+      const blob = new Blob(chunks, { type: "audio/webm" });
+      const formData = new FormData();
+      formData.append("audio", blob, "voice.webm");
+
+      const res = await fetch("http://localhost:5000/api/voice/search", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json(); // { transcript, matches }
+      setVoiceResults({
+        transcript: data.transcript || "",
+        matches: Array.isArray(data.matches) ? data.matches : [],
+      });
+      setIsModalOpen(true);
+    };
+
+    recorder.start();
+    setMediaRecorder(recorder);
+    setRecording(true);
+
+    setTimeout(() => {
+      recorder.stop();
+      setRecording(false);
+    }, 4000);
+  } catch (err) {
+    console.error("Voice capture failed:", err);
+  }
+};
+
+
+
   return (
     <div className="dashboard-wrapper">
-      {/* Header */}
-      <header className="dashboard-header">
-        <h1>VendorMart</h1>
-        <div className="header-actions">
-          <button className="profile-icon" onClick={() => navigate("/vendor/profile")}>
-            👤
-          </button>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
+    {/* Header */}
+    <header className="dashboard-header">
+      <h1>VendorMart</h1>
+      <div className="header-actions">
+        <button 
+          className="profile-icon" 
+          onClick={() => navigate(`/vendor/profile/${VENDOR_ID}`)}
+        >
+          👤
+        </button>
+        <button className="logout-btn">Logout</button>
+        {/* <button className="logout-btn" onClick={handleLogout}>Logout</button> */}
+      </div>
+
+      {/* Voice Search Modal */}
+      <VoiceSearchModal
+  isOpen={isModalOpen}
+  results={voiceResults}
+  onClose={() => setIsModalOpen(false)}
+/>
+    </header>
 
       {/* Welcome */}
       <div className="welcome-card">
         <h2>Hello Om!</h2>
         <p>Ready to stock up your stall today?</p>
-        <button className="voice-btn">🎤 Tap to order by voice</button>
+        <button className="voice-btn" onClick={startVoiceOrder}>
+  {recording ? "🎙 Listening..." : "🎤 Tap to order by voice"}
+</button>
       </div>
 
+       {/* Profile Section */}
+      { profile && (
+        <ProfileCard stats={profile.stats} vendor={profile.vendor} />
+      )}
       {/* Quick Actions */}
       <section className="quick-actions">
         <h3>Quick Actions</h3>
         <div className="action-grid">
-          <div className="action-card">Browse Products</div>
-          <div className="action-card">Surplus Deals</div>
-          <div className="action-card">Bulk Groups</div>
-          <div className="action-card">Storage</div>
+          <Link to="/browse-products" className="action-card">Browse Products</Link>
+          {/* <div className="action-card">Surplus Deals</div> */}
+          <Link to="/bulk-groups" className="quick-action">
+            <div className="action-card">View Bulk Purchase Groups</div>
+          </Link>
+          <Link to="/storage" className="action-card">Storage</Link>
         </div>
       </section>
 
       {/* Status */}
-      <section className="status-section">
-        <h3>Your Status</h3>
-        <div className="status-card">
-          <p>Bronze Member</p>
-          <p>Rating: 0/5</p>
-        </div>
-      </section>
+          <StatusCard vendorId="6884e1c1c6bb5e111aedc8bf" />
 
       {/* Hot Surplus Deals */}
        <section className="deals-section">
@@ -89,18 +145,33 @@ const VendorDashboard = () => {
           ))}
         </div>
       </section>
-
-      {/* <section className="deals-section">
-        <h3>Active Deals</h3>
-        <div className="deals-list">
-          {activeDeals.map((deal) => (
-            <DealCard key={deal._id} deal={deal} />
-          ))}
-        </div>
-      </section> */}
     </div>
   );
 };
+
+// ProfileCard Component
+function ProfileCard({ vendor, stats }) {
+  return (
+    <div className="profile-card">
+      <button className="profile-icon overflow-hidden flex items-center justify-center">
+  <img src="/path/to/profile.jpg" alt="Profile" className="w-full h-full object-cover rounded-full" />
+</button>
+
+      <p><strong>Name:</strong> {vendor.name}</p>
+      <p><strong>Username:</strong> {vendor.username}</p>
+      <p><strong>Phone:</strong> {vendor.phone || "N/A"}</p>
+      <h4>📊 Stats</h4>
+      <ul>
+        <li>Total Orders: {stats.totalOrders}</li>
+        <li>Amount Spent: ₹{stats.amountSpent}</li>
+        <li>Amount Original: ₹{stats.amountOriginal}</li>
+        <li>Profit: ₹{stats.profit}</li>
+        <li>Credit Score: {stats.creditScore}</li>
+        <li>Bulk Groups Joined: {stats.bulkGroupsJoined}</li>
+      </ul>
+    </div>
+  );
+}
 
 function DealCard({ deal }) {
   const expireDate = new Date(deal.expires).toLocaleDateString("en-IN");

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./BulkGroups.css"
 
 export default function BulkGroups() {
   const [groups, setGroups] = useState([]);
@@ -20,23 +21,25 @@ export default function BulkGroups() {
   }, []);
 
   const joinGroup = async (id) => {
-    const qty = Number(prompt("Enter quantity you want to commit:"));
-    if (!qty || qty <= 0) return;
+  const qty = Number(prompt("Enter quantity you want to commit:"));
+  if (!qty || qty <= 0) return;
 
-    try {
-      const res = await fetch(`http://localhost:5000/api/bulk-groups/${id}/join`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qty }),
-      });
-      if (!res.ok) throw new Error("Join failed");
-      const updated = await res.json();
-      setGroups((prev) => prev.map((g) => (g._id === id ? updated : g)));
-      alert("Joined successfully!");
-    } catch (e) {
-      alert("Failed to join group");
-    }
-  };
+  const vendorId = "6884e1c1c6bb5e111aedc8bf"; // TODO: dynamically get from localStorage or login
+  try {
+    const res = await fetch(`http://localhost:5000/api/bulk-groups/${id}/join`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ vendorId, qty }),
+    });
+
+    if (!res.ok) throw new Error("Join failed");
+    const updated = await res.json();
+    setGroups((prev) => prev.map((g) => (g._id === id ? updated.group : g)));
+    alert("Joined successfully!");
+  } catch (e) {
+    alert("Failed to join group");
+  }
+};
 
   if (loading) return <div className="bulk-wrapper">Loading…</div>;
   if (err) return <div className="bulk-wrapper">{err}</div>;
@@ -121,13 +124,13 @@ export default function BulkGroups() {
           padding: 1rem;
         }
         .bulk-card img {
-          width: 130px;
-          height: 130px;
-          object-fit: cover;
+          width: 20%;
+          object-fit:contain;
           border-radius: 8px;
         }
         .info {
           flex: 1;
+          width : 80%;
         }
         .category {
           color: #777;

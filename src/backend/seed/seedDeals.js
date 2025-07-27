@@ -30,7 +30,7 @@ const Deal = require("../models/Deal");
         tags: ["Fresh", "Local", "Bulk"],
         status: "Extra Stock",
         imageUrl:
-          "https://images.unsplash.com/photo-1604908177233-4ab9a97a52f3?crop=entropy&cs=tinysrgb&fit=crop&w=400&q=80",
+          "https://th.bing.com/th/id/R.aec693d88f7ae4951e40d09628bf0d51?rik=CW53xf12MiejtQ&riu=http%3a%2f%2fwww.ppfoods.in%2frice-flour-bowl-363077472.jpg&ehk=hOO1hVHoOQGYVvEvdZI%2fg4YkuMZv4CN%2b5X7h%2bPwpujE%3d&risl=&pid=ImgRaw&r=0",
         type: "surplus",
       },
       {
@@ -45,7 +45,7 @@ const Deal = require("../models/Deal");
         tags: ["Premium", "Organic"],
         status: "Near Expiry",
         imageUrl:
-          "https://images.unsplash.com/photo-1627323479905-3e5b2f989833?crop=entropy&cs=tinysrgb&fit=crop&w=400&q=80",
+          "https://th.bing.com/th/id/R.aec693d88f7ae4951e40d09628bf0d51?rik=CW53xf12MiejtQ&riu=http%3a%2f%2fwww.ppfoods.in%2frice-flour-bowl-363077472.jpg&ehk=hOO1hVHoOQGYVvEvdZI%2fg4YkuMZv4CN%2b5X7h%2bPwpujE%3d&risl=&pid=ImgRaw&r=0",
         type: "surplus",
       },
       {
@@ -60,7 +60,7 @@ const Deal = require("../models/Deal");
         tags: ["Fresh", "Local"],
         status: "",
         imageUrl:
-          "https://images.unsplash.com/photo-1617159861239-0b7f8c7d7c5b?crop=entropy&cs=tinysrgb&fit=crop&w=400&q=80",
+          "https://tse3.mm.bing.net/th/id/OIP.JMRIOYp2jmlICSlEma_3gQHaE7?rs=1&pid=ImgDetMain&o=7&rm=3",
         type: "active",
       },
     ];

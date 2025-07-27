@@ -1,48 +1,30 @@
 const express = require("express");
-const auth = require("../middleware/auth");
+// const auth = require("../middleware/auth");  // <- not using it now
 const Vendor = require("../models/Vendors");
 const Order = require("../models/Order");
 const BulkGroupParticipation = require("../models/BulkGroupParticipation");
-const BulkGroup = require("../models/BulkGroup");
 
 const router = express.Router();
 
-router.get("/", auth, async (req, res) => {
+// GET /api/profile/:vendorId
+router.get("/:vendorId", async (req, res) => {
   try {
-    const vendorId = req.user.id;
+    const vendorId = req.params.vendorId;   // <— use param instead of req.user
+    if (!vendorId) return res.status(400).json({ message: "vendorId is required" });
 
-    // Fetch vendor details
     const vendor = await Vendor.findById(vendorId).select("name username phone");
+    if (!vendor) return res.status(404).json({ message: "Vendor not found" });
 
-    // Fetch vendor orders
     const orders = await Order.find({ vendor: vendorId }).sort({ createdAt: -1 });
 
-    // Fetch bulk group participations
-    const participations = await BulkGroupParticipation.find({ vendor: vendorId })
+    const participations = await BulkGroupParticipation
+      .find({ vendor: vendorId })
       .populate("bulkGroup");
 
-    // Calculate totals
-    const amountSpent = orders.reduce((sum, o) => sum + (o.totalPaid || 0), 0);
+    const amountSpent    = orders.reduce((sum, o) => sum + (o.totalPaid || 0), 0);
     const amountOriginal = orders.reduce((sum, o) => sum + (o.totalOriginal || 0), 0);
-    const profit = amountOriginal - amountSpent;
-
-    // Fake credit score (you can adjust logic)
-    const creditScore = Math.min(900, 600 + Math.floor(amountSpent / 1000));
-
-    // Prepare bulk group data
-    const bulkGroups = participations
-      .filter((p) => p.bulkGroup) // skip if group is deleted
-      .map((p) => ({
-        id: p.bulkGroup._id,
-        name: p.bulkGroup.name,
-        bulkPrice: p.bulkGroup.bulkPrice,
-        actualPrice: p.bulkGroup.actualPrice,
-        minQtyTarget: p.bulkGroup.minQtyTarget,
-        currentQty: p.bulkGroup.currentQty,
-        deadline: p.bulkGroup.deadline,
-        qty: p.qty || 0,
-        joinedAt: p.joinedAt,
-      }));
+    const profit         = amountOriginal - amountSpent;
+    const creditScore    = Math.min(900, 600 + Math.floor(amountSpent / 1000));
 
     res.json({
       vendor,
@@ -52,13 +34,25 @@ router.get("/", auth, async (req, res) => {
         profit,
         creditScore,
         totalOrders: orders.length,
-        bulkGroupsJoined: bulkGroups.length,
+        bulkGroupsJoined: participations.length,
       },
       orders,
-      bulkGroups,
+      bulkGroups: participations
+        .filter(p => p.bulkGroup)   // safety
+        .map(p => ({
+          id: p.bulkGroup._id,
+          name: p.bulkGroup.name,
+          bulkPrice: p.bulkGroup.bulkPrice,
+          actualPrice: p.bulkGroup.actualPrice,
+          minQtyTarget: p.bulkGroup.minQtyTarget,
+          currentQty: p.bulkGroup.currentQty,
+          deadline: p.bulkGroup.deadline,
+          qty: p.qty || 0,
+          joinedAt: p.joinedAt,
+        })),
     });
   } catch (e) {
-    console.error("Profile fetch error:", e);
+    console.error(e);
     res.status(500).json({ message: "Server error" });
   }
 });
