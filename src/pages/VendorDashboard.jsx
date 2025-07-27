@@ -1,22 +1,29 @@
 // src/pages/VendorDashboard.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./VendorDashboard.css";
 
 const VendorDashboard = () => {
+    const navigate = useNavigate();
     const [surplusDeals, setSurplusDeals] = useState([]);
     const [activeDeals, setActiveDeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState("");
 
+      const handleLogout = () => {
+      localStorage.removeItem("token");
+      // if you store user anywhere else, clear it here too
+      // e.g. reduxStore.dispatch(logout())
+      navigate("/vendor/login", { replace: true });
+    };
+
     useEffect(() => {
   (async () => {
     try {
       const sRes = await fetch("http://localhost:5000/api/deals");
-    //   const aRes = await fetch("http://localhost:5000/api/deals");
 
       if (!sRes.ok ) {
         const sText = await sRes.text();
-        // const aText = await aRes.text();
         throw new Error(
           `Surplus: ${sRes.status} ${sText}\nActive:`
         );
@@ -24,7 +31,6 @@ const VendorDashboard = () => {
 
       const [sData] = await Promise.all([sRes.json()]);
       setSurplusDeals(sData);
-    //   setActiveDeals(aData);
     } catch (e) {
       console.error(e);
       setErr(e.message || "Failed to load deals");
@@ -37,11 +43,15 @@ const VendorDashboard = () => {
   return (
     <div className="dashboard-wrapper">
       {/* Header */}
-      <div className="dashboard-header">
+      <header className="dashboard-header">
         <h1>VendorMart</h1>
-        <div className="credit-balance">Credit Balance: ₹0</div>
-        <button className="logout-btn">Logout</button>
-      </div>
+        <div className="header-actions">
+          <button className="profile-icon" onClick={() => navigate("/vendor/profile")}>
+            👤
+          </button>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </div>
+      </header>
 
       {/* Welcome */}
       <div className="welcome-card">

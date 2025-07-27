@@ -1,0 +1,79 @@
+.bulk-wrapper {
+  padding: 2rem;
+  background: #f6f7fb;
+  min-height: 100vh;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ff5a1f;
+  margin-bottom: 1.5rem;
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.group-card {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.group-card:hover {
+  transform: scale(1.02);
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.strike {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.9rem;
+  margin-left: 5px;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0.5rem 0 1rem;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(to right, #ff5a1f, #ff914d);
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+.btn-join {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 5px;
+  background: #ff5a1f;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-join:hover {
+  background: #e04a10;
+}

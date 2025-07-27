@@ -25,7 +25,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "seed:deals": "node src/backend/seed/seedDeals.js",
-    "backend": "nodemon src/backend/server.js"
+    "backend": "nodemon src/backend/server.js",
+    "proxy": "http://localhost:5000"
+
   },
   "eslintConfig": {
     "extends": [
