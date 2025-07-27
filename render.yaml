@@ -2,6 +2,7 @@ services:
   - type: web
     name: vendormart-frontend
     env: node
+    rootDir: .                         # 👈 Because package.json is at root
     buildCommand: npm install && npm run build
     startCommand: serve -s build
     staticPublishPath: build
@@ -13,12 +14,12 @@ services:
   - type: web
     name: vendormart-backend
     env: node
-    rootDir: src/backend
+    rootDir: backend                   # 👈 Your Express server lives here
     buildCommand: npm install
     startCommand: node server.js
     autoDeploy: true
     envVars:
       - key: MONGO_URI
-        sync: false
-      - key: OTHER_SECRET
-        sync: false
+        value: mongodb+srv://123:123@cluster0.kjcdjat.mongodb.net/vendor?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: mysecretkey
