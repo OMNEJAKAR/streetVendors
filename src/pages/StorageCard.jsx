@@ -15,7 +15,6 @@ export default function StoragePage() {
     capacity: "",
     bookingInProgress: false,
   });
-
   useEffect(() => {
     fetchData();
   }, []);
