@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: vendormart-backend
+    env: node
+    rootDir: src/backend
+    buildCommand: npm install
+    startCommand: node server.js
+    autoDeploy: true
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: OTHER_SECRET
+        sync: false
