@@ -11,25 +11,25 @@ h1 {
 
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
+  justify-content: center;
 }
 
-.product-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.2s;
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
+
 
 .product-card:hover {
   transform: scale(1.03);
 }
 
 .product-card img {
-  width: 100%;
+  width: 25%;
   height: 150px;
   object-fit: cover;
   border-radius: 5px;

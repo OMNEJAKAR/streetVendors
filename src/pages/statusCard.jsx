@@ -27,10 +27,13 @@ export default function StatusCard({ vendorId }) {
         {data.nextLevelAt && ` (next at ${data.nextLevelAt} XP)`}
       </small>
 
-      <div className="credit">
-        <p>Credit: ₹{data.credit.used} / ₹{data.credit.limit}</p>
-        <p>Available: ₹{data.credit.available}</p>
-      </div>
+      <p>
+        Credit: ₹{data.credit?.used ?? 0} / ₹{data.credit?.limit ?? 0}
+      </p>
+      <p>
+        Available: ₹{data.credit?.available ?? 0}
+      </p>
+
 
       <div className="coins">
         <p>Coins: {data.coins}</p>
