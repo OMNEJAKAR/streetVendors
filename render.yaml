@@ -2,7 +2,7 @@ services:
   - type: web
     name: vendormart-frontend
     env: node
-    rootDir: .                         # 👈 Because package.json is at root
+    rootDir: src                     # 👈 Important: package.json is in /src
     buildCommand: npm install && npm run build
     startCommand: serve -s build
     staticPublishPath: build
@@ -14,7 +14,7 @@ services:
   - type: web
     name: vendormart-backend
     env: node
-    rootDir: backend                   # 👈 Your Express server lives here
+    rootDir: src/backend             # 👈 Backend also lives in /src/backend
     buildCommand: npm install
     startCommand: node server.js
     autoDeploy: true
