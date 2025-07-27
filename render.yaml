@@ -1,5 +1,16 @@
 services:
   - type: web
+    name: vendormart-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: serve -s build
+    staticPublishPath: build
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+  - type: web
     name: vendormart-backend
     env: node
     rootDir: src/backend
