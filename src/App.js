@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import VendorDashboard from "./pages/VendorDashboard";
+import StorageCard from "./pages/StorageCard";
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
         <Route path="/vendor/login" element={<AuthPage mode="login" />} />
         <Route path="/vendor/register" element={<AuthPage mode="register" />} />
         <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+        <Route path="/storage" element={<StorageCard />} />
         <Route path="*" element={<AuthPage mode="login" />} />
       </Routes>
     </BrowserRouter>

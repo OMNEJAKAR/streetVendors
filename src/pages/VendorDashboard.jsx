@@ -1,5 +1,6 @@
 // src/pages/VendorDashboard.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
+import { Link } from "react-router-dom";
 import "./VendorDashboard.css";
 
 const VendorDashboard = () => {
@@ -57,7 +58,7 @@ const VendorDashboard = () => {
           <div className="action-card">Browse Products</div>
           <div className="action-card">Surplus Deals</div>
           <div className="action-card">Bulk Groups</div>
-          <div className="action-card">Storage</div>
+          <Link to="/storage" className="action-card">Storage</Link>
         </div>
       </section>
 
